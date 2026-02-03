@@ -1,47 +1,53 @@
 <template>
-  <circle cx="120" cy="120" r="74" fill="#bdbdbd" />
-  <circle cx="120" cy="120" r="66" fill="#1d1d1d" />
-  <circle
-    cx="120"
-    cy="120"
-    r="64"
-    fill="none"
-    stroke="#ffffff"
-    stroke-opacity="0.10"
-    stroke-width="2"
-  />
-
-  <g :transform="`translate(120 120) rotate(${rotation})`">
-    <line
-      x1="0"
-      y1="-54"
-      x2="0"
-      y2="-20"
+  <!-- viewBox keeps proportions while rendered size can be controlled via width/height -->
+  <svg viewBox="0 0 180 180" width="180" height="180">
+    <!-- knob body -->
+    <circle cx="90" cy="90" r="55.5" fill="#bdbdbd" />
+    <circle cx="90" cy="90" r="49.5" fill="#1d1d1d" />
+    <circle
+      cx="90"
+      cy="90"
+      r="48"
+      fill="none"
       stroke="#ffffff"
-      stroke-width="6"
-      stroke-linecap="round"
+      stroke-opacity="0.10"
+      stroke-width="1.5"
     />
-    <line
-      x1="0"
-      y1="-54"
-      x2="0"
-      y2="-20"
-      stroke="#ffffff"
-      stroke-opacity="0.25"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
-  </g>
 
-  <circle cx="120" cy="120" r="14" fill="#000" fill-opacity="0.35" />
-  <circle
-    cx="120"
-    cy="120"
-    r="12"
-    fill="#111"
-    stroke="#fff"
-    stroke-opacity="0.12"
-  />
+    <!-- indicator line -->
+    <g :transform="`translate(90 90) rotate(${rotation})`">
+      <line
+        x1="0"
+        y1="-40.5"
+        x2="0"
+        y2="-15"
+        stroke="#ffffff"
+        stroke-width="4.5"
+        stroke-linecap="round"
+      />
+      <line
+        x1="0"
+        y1="-40.5"
+        x2="0"
+        y2="-15"
+        stroke="#ffffff"
+        stroke-opacity="0.25"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+    </g>
+
+    <!-- center cap -->
+    <circle cx="90" cy="90" r="10.5" fill="#000" fill-opacity="0.35" />
+    <circle
+      cx="90"
+      cy="90"
+      r="9"
+      fill="#111"
+      stroke="#fff"
+      stroke-opacity="0.12"
+    />
+  </svg>
 </template>
 
 <script setup lang="ts">

@@ -46,7 +46,9 @@
         <line x1="0" y1="-92" x2="0" y2="-82" transform="rotate(135)" />
       </g>
     </g>
-    <slot />
+    <g transform="translate(30 30)">
+      <slot />
+    </g>
   </svg>
 </template>
 

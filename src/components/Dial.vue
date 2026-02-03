@@ -1,11 +1,11 @@
 <template>
-  <div
-    class="flex flex-col align-center items-center"
-    @mousewheel="handleMousewheel"
-    @mousedown="handleMouseDown"
-  >
+  <div class="flex flex-col align-center items-center">
     <DialBack>
-      <DialHead :rotation="dialHeadRotation" />
+      <DialHead
+        :rotation="dialHeadRotation"
+        @mousewheel="handleMousewheel"
+        @mousedown="handleMouseDown"
+      />
     </DialBack>
   </div>
 </template>
