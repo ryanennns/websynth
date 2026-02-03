@@ -1,18 +1,17 @@
 <template>
   <div class="flex flex-col align-center items-center">
-    <DialBackground @mousedown="handleMouseDown">
-      <!-- range - offset -->
+    <DialBack @mousedown="handleMouseDown" class="h-32 w-32">
       <DialHead :rotation="rotation" />
-    </DialBackground>
+    </DialBack>
 
     {{ normalizedValue }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import DialBackground from "./Dials/DialBackground.vue";
-import DialHead from "./Dials/DialHead.vue";
+import { computed, ref } from "vue";
+import DialHead from "./Dials/Default/DialHead.vue";
+import DialBack from "./Dials/Default/DialBack.vue";
 
 interface Props {
   min: number;
@@ -22,6 +21,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const initMousePosition = ref<{ x: number; y: number } | undefined>(undefined);
 
 const offset = props.offset ?? 0;
 const startRotation = computed<number>(() => -180 + offset);
@@ -34,6 +35,11 @@ const rotation = computed<number>(() => degrees.value + startRotation.value);
 
 const normalizedValue = computed<number>(() => degrees.value / range.value);
 const handleMouseDown = (event: any) => {
+  initMousePosition.value = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
   mouseYOnStart.value = event.clientY;
   degreesOnStart.value = degrees.value;
 };
