@@ -8,7 +8,13 @@ watch(foo, (newVal) => console.log(newVal));
 
 <template>
   <div class="h-screen flex-col flex justify-center items-center">
-    <Dial :min="0" :max="100" :step="15" :offset="30" v-model="foo" />
+    <Dial
+      class="h-32 w-32"
+      :step="15"
+      :offset="30"
+      :default="0.5"
+      v-model="foo"
+    />
     {{ foo }}
   </div>
 </template>
