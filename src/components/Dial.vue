@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col align-center items-center">
     <DialBack @mousedown="handleMouseDown" class="h-32 w-32">
-      <DialHead :rotation="rotation" />
+      <DialHead :rotation="dialHeadRotation" />
     </DialBack>
   </div>
 </template>
@@ -25,45 +25,46 @@ const step = computed<number>(() => props.step ?? 1);
 const startRotation = computed<number>(() => -180 + offset.value);
 const range = computed<number>(() => 360 - 2 * offset.value);
 
-const mouseYOnStart = ref<number | undefined>(undefined);
-const degreesOnStart = ref<number>(0);
-const degrees = ref<number>(0);
-const rotation = computed<number>(() => degrees.value + startRotation.value);
+const mouseYOnMouseDown = ref<number | undefined>(undefined);
+const valueOnMouseDown = ref<number>(0);
+const dialHeadRotation = computed<number>(() => degrees.value + startRotation.value);
 
-const normalizedValue = computed<number>(() => degrees.value / range.value);
-const rawValue = ref<number>(0);
+const raw = ref<number>(0);
+const degrees = ref<number>(0);
+const normalized = computed<number>(() => degrees.value / range.value);
+
 const handleMouseDown = (event: any) => {
-  mouseYOnStart.value = event.clientY;
-  degreesOnStart.value = degrees.value;
+  mouseYOnMouseDown.value = event.clientY;
+  valueOnMouseDown.value = degrees.value;
 };
 
 addEventListener("mouseup", () => {
-  if (!mouseYOnStart.value) {
+  if (!mouseYOnMouseDown.value) {
     return;
   }
 
-  mouseYOnStart.value = undefined;
+  mouseYOnMouseDown.value = undefined;
 });
 
 addEventListener("mousemove", (event: any) => {
-  if (!mouseYOnStart.value) {
+  if (!mouseYOnMouseDown.value) {
     return;
   }
 
-  rawValue.value = Math.max(
+  raw.value = Math.max(
     0,
     Math.min(
-      degreesOnStart.value + (mouseYOnStart.value - event.clientY),
+      valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY),
       range.value,
     ),
   );
 
   degrees.value = Math.min(
-    Math.ceil(rawValue.value / step.value) * step.value,
+    Math.ceil(raw.value / step.value) * step.value,
     range.value,
   );
 });
 
 const emit = defineEmits(["update:modelValue"]);
-watch(normalizedValue, (newValue) => emit("update:modelValue", newValue));
+watch(normalized, (newValue) => emit("update:modelValue", newValue));
 </script>
