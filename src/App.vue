@@ -19,7 +19,6 @@ watch(foo, (newVal) => console.log(newVal));
       v-model="foo"
       class="h-32 w-32"
     />
-    {{ foo }}
     <button @click="foo += 0.1">increment</button>
   </div>
 </template>

@@ -8,7 +8,6 @@
         @mousedown="handleMouseDown"
       />
     </component>
-    {{ raw }}
   </div>
 </template>
 
@@ -26,6 +25,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const clampBetween = (min: number, max: number, val: number) =>
+  Math.max(min, Math.min(max, val));
+
 const offset = computed<number>(() => props.offset ?? 0);
 const step = computed<number>(() => props.step ?? 1);
 const defaultRef = computed<number>(() => props.default ?? props.val ?? 0);
@@ -38,20 +40,7 @@ const dialHeadRotation = computed<number>(
   () => degrees.value + startRotation.value,
 );
 
-const raw = ref<number>(defaultRef.value);
-const degrees = ref<number>(range.value * raw.value);
-const normalized = computed<number>(() => degrees.value / range.value);
-
-const clampBetween = (min: number, max: number, val: number) =>
-  Math.max(min, Math.min(max, val));
-
-const handleMouseDown = (event: any) => {
-  mouseYOnMouseDown.value = event.clientY;
-  valueOnMouseDown.value = degrees.value;
-};
-
-const setRaw = (val: number) => (raw.value = clampBetween(0, range.value, val));
-
+const degrees = ref<number>(0);
 const setDegrees = (val: number) =>
   (degrees.value = clampBetween(
     0,
@@ -59,16 +48,17 @@ const setDegrees = (val: number) =>
     Math.ceil(val / step.value) * step.value,
   ));
 
+const normalized = computed<number>(() => degrees.value / range.value);
+
+const handleMouseDown = (event: any) => {
+  mouseYOnMouseDown.value = event.clientY;
+  valueOnMouseDown.value = degrees.value;
+};
+
 const handleMousewheel = (event: any) => {
   event.wheelDelta > 0
-    ? (() => {
-        setRaw(raw.value + step.value);
-        setDegrees(degrees.value + step.value);
-      })()
-    : (() => {
-        setRaw(raw.value - step.value);
-        setDegrees(degrees.value - step.value);
-      })();
+    ? setDegrees(degrees.value + step.value)
+    : setDegrees(degrees.value - step.value);
 };
 
 addEventListener("mouseup", () => {
@@ -84,16 +74,14 @@ addEventListener("mousemove", (event: any) => {
     return;
   }
 
-  setRaw(valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY));
-  setDegrees(raw.value);
+  setDegrees(
+    valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY),
+  );
 });
 
 const emit = defineEmits(["update:modelValue"]);
 watch(normalized, (newValue) => emit("update:modelValue", newValue));
 onMounted(() => emit("update:modelValue", defaultRef.value));
 
-watch(
-  props,
-  (newValue) => setRaw(newValue.val) && setDegrees(range.value * newValue.val),
-);
+watch(props, (newValue) => setDegrees(range.value * newValue.val));
 </script>
