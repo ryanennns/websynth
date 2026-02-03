@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Dial from "./components/Dial.vue";
 import { ref, watch } from "vue";
+import DialBack from "./components/Dials/Default/DialBack.vue";
+import DialHead from "./components/Dials/Default/DialHead.vue";
 
 const foo = ref<number>(0);
 watch(foo, (newVal) => console.log(newVal));
@@ -9,10 +11,11 @@ watch(foo, (newVal) => console.log(newVal));
 <template>
   <div class="h-screen flex-col flex justify-center items-center">
     <Dial
-      class="h-32 w-32"
-      :step="15"
+      :step="30"
       :offset="30"
-      :default="0.5"
+      :head="DialHead"
+      :back="DialBack"
+      class="h-32 w-32"
       v-model="foo"
     />
     {{ foo }}

@@ -1,24 +1,25 @@
 <template>
   <div class="flex flex-col align-center items-center">
-    <DialBack>
-      <DialHead
+    <component :is="back">
+      <component
+        :is="head"
         :rotation="dialHeadRotation"
         @mousewheel="handleMousewheel"
         @mousedown="handleMouseDown"
       />
-    </DialBack>
+    </component>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import DialHead from "./Dials/Default/DialHead.vue";
-import DialBack from "./Dials/Default/DialBack.vue";
 
 interface Props {
   step?: number;
   offset?: number;
   default?: number;
+  head?: any;
+  back?: any;
 }
 
 const props = defineProps<Props>();
