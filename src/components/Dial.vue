@@ -18,50 +18,46 @@ interface Props {
   min: number;
   max: number;
   step: number;
+  offset: number | undefined;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
-const offset = 30
+const offset = props.offset ?? 0;
 const startRotation = computed<number>(() => -180 + offset);
-const range = computed<number>(() => 360 - (2*offset))
-
-const inFocus = ref<boolean>(false);
-
+const range = computed<number>(() => 360 - 2 * offset);
 
 const mouseYOnStart = ref<number | undefined>(undefined);
 const degreesOnStart = ref<number>(0);
 const degrees = ref<number>(0);
 const rotation = computed<number>(() => degrees.value + startRotation.value);
 
-const normalizedValue = computed<number>(() => degrees.value / range.value)
+const normalizedValue = computed<number>(() => degrees.value / range.value);
 const handleMouseDown = (event: any) => {
-  inFocus.value = true;
   mouseYOnStart.value = event.clientY;
   degreesOnStart.value = degrees.value;
 };
 
 addEventListener("mouseup", () => {
-  if (!inFocus.value) {
+  if (!mouseYOnStart.value) {
     return;
   }
 
-  inFocus.value = false;
   mouseYOnStart.value = undefined;
 });
 
 addEventListener("mousemove", (event: any) => {
-  if (!inFocus.value) {
+  if (!mouseYOnStart.value) {
     return;
   }
 
   degrees.value = Math.max(
     0,
-    Math.min(degreesOnStart.value + (mouseYOnStart.value - event.clientY), range.value),
+    Math.min(
+      degreesOnStart.value + (mouseYOnStart.value - event.clientY),
+      range.value,
+    ),
   );
 });
 
-watch(inFocus, (newValue) => console.log(newValue));
 </script>
-
-<style></style>
