@@ -8,7 +8,6 @@
         @mousedown="handleMouseDown"
       />
     </component>
-    <p>{{ normalized }}</p>
   </div>
 </template>
 
@@ -29,7 +28,7 @@ const props = defineProps<Props>();
 
 const offset = computed<number>(() => props.offset ?? 0);
 const range = computed<number>(() => 360 - 2 * offset.value);
-const step = computed<number>(() => (props.step ?? 1) * range.value);
+const step = computed<number>(() => (props.step ?? 1));
 
 const mouseYOnMouseDown = ref<number | undefined>(undefined);
 const valueOnMouseDown = ref<number>(0);
