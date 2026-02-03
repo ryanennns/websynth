@@ -8,6 +8,7 @@
         @mousedown="handleMouseDown"
       />
     </component>
+    <p>{{ normalized }}</p>
   </div>
 </template>
 
@@ -15,7 +16,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 
 interface Props {
-  val: number;
+  modelValue: number;
   step?: number;
   offset?: number;
   default?: number;
@@ -30,7 +31,7 @@ const clampBetween = (min: number, max: number, val: number) =>
 
 const offset = computed<number>(() => props.offset ?? 0);
 const step = computed<number>(() => props.step ?? 1);
-const defaultRef = computed<number>(() => props.default ?? props.val ?? 0);
+const defaultRef = computed<number>(() => props.default ?? props.modelValue ?? 0);
 const startRotation = computed<number>(() => -180 + offset.value);
 const range = computed<number>(() => 360 - 2 * offset.value);
 
@@ -83,5 +84,5 @@ const emit = defineEmits(["update:modelValue"]);
 watch(normalized, (newValue) => emit("update:modelValue", newValue));
 onMounted(() => emit("update:modelValue", defaultRef.value));
 
-watch(props, (newValue) => setDegrees(range.value * newValue.val));
+watch(props, (newValue) => setDegrees(range.value * newValue.modelValue));
 </script>

@@ -11,7 +11,6 @@ watch(foo, (newVal) => console.log(newVal));
 <template>
   <div class="h-screen flex-col flex justify-center items-center">
     <Dial
-      :val="foo"
       :step="30"
       :offset="30"
       :head="DialHead"
