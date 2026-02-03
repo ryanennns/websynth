@@ -28,8 +28,8 @@ interface Props {
 const props = defineProps<Props>();
 
 const offset = computed<number>(() => props.offset ?? 0);
-const step = computed<number>(() => props.step ?? 1);
 const range = computed<number>(() => 360 - 2 * offset.value);
+const step = computed<number>(() => (props.step ?? 1) * range.value);
 
 const mouseYOnMouseDown = ref<number | undefined>(undefined);
 const valueOnMouseDown = ref<number>(0);
@@ -39,7 +39,7 @@ const dialHeadRotation = computed<number>(
   () => zeroValueRotation.value + degrees.value,
 );
 
-const degrees = ref<number>(0);
+const degrees = ref<number>((props.default ?? 1) * range.value);
 const setDegrees = (val: number) =>
   (degrees.value = clampBetween(
     0,
@@ -74,8 +74,8 @@ addEventListener("mousemove", (event: any) => {
 
 const handleMousewheel = (event: any) => {
   event.wheelDelta > 0
-      ? setDegrees(degrees.value + step.value)
-      : setDegrees(degrees.value - step.value);
+    ? setDegrees(degrees.value + step.value)
+    : setDegrees(degrees.value - step.value);
 };
 
 const emit = defineEmits(["update:modelValue"]);

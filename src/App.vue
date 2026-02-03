@@ -11,13 +11,14 @@ watch(foo, (newVal) => console.log(newVal));
 <template>
   <div class="h-screen flex-col flex justify-center items-center">
     <Dial
-      :step="30"
+      :step="0.1"
       :offset="30"
+      :default="0.5"
       :head="DialHead"
       :back="DialBack"
       v-model="foo"
       class="h-32 w-32"
     />
-    <button @click="foo += 0.1">increment</button>
+    <button @click="foo += 0.05">increment</button>
   </div>
 </template>
