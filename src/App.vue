@@ -3,11 +3,9 @@ import Dial from "./components/Dial.vue";
 </script>
 
 <template>
-  <Dial
-      :min="0"
-      :max="100"
-      :step="10"
-  />
+  <div class="h-screen flex justify-center items-center">
+    <Dial :min="0" :max="100" :step="10" />
+  </div>
 </template>
 
 <style scoped></style>
