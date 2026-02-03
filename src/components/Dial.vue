@@ -3,13 +3,11 @@
     <DialBack @mousedown="handleMouseDown" class="h-32 w-32">
       <DialHead :rotation="rotation" />
     </DialBack>
-
-    {{ normalizedValue }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import {computed, ref, watch} from "vue";
 import DialHead from "./Dials/Default/DialHead.vue";
 import DialBack from "./Dials/Default/DialBack.vue";
 
@@ -38,7 +36,7 @@ const handleMouseDown = (event: any) => {
   initMousePosition.value = {
     x: event.clientX,
     y: event.clientY,
-  }
+  };
 
   mouseYOnStart.value = event.clientY;
   degreesOnStart.value = degrees.value;
@@ -66,4 +64,6 @@ addEventListener("mousemove", (event: any) => {
   );
 });
 
+const emit = defineEmits(['update:modelValue'])
+watch(normalizedValue, (newValue) => emit("update:modelValue", newValue))
 </script>
