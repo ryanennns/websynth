@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col align-center items-center">
+  <div
+    class="flex flex-col align-center items-center"
+    @mousewheel="handleMousewheel"
+  >
     <DialBack @mousedown="handleMouseDown" class="h-32 w-32">
       <DialHead :rotation="dialHeadRotation" />
     </DialBack>
@@ -27,7 +30,9 @@ const range = computed<number>(() => 360 - 2 * offset.value);
 
 const mouseYOnMouseDown = ref<number | undefined>(undefined);
 const valueOnMouseDown = ref<number>(0);
-const dialHeadRotation = computed<number>(() => degrees.value + startRotation.value);
+const dialHeadRotation = computed<number>(
+  () => degrees.value + startRotation.value,
+);
 
 const raw = ref<number>(0);
 const degrees = ref<number>(0);
@@ -36,6 +41,29 @@ const normalized = computed<number>(() => degrees.value / range.value);
 const handleMouseDown = (event: any) => {
   mouseYOnMouseDown.value = event.clientY;
   valueOnMouseDown.value = degrees.value;
+};
+
+const setRaw = (val: number) => {
+  raw.value = Math.max(0, Math.min(val, range.value));
+};
+
+const setDegrees = (val: number) => {
+  degrees.value = Math.max(
+    0,
+    Math.min(Math.ceil(val / step.value) * step.value, range.value),
+  );
+};
+
+const handleMousewheel = (event: any) => {
+  if (event.wheelDelta > 0) {
+    setDegrees(degrees.value + step.value);
+    setRaw(raw.value + step.value);
+  }
+
+  if (event.wheelDelta < 0) {
+    setDegrees(degrees.value - step.value);
+    setRaw(raw.value - step.value);
+  }
 };
 
 addEventListener("mouseup", () => {
@@ -51,18 +79,8 @@ addEventListener("mousemove", (event: any) => {
     return;
   }
 
-  raw.value = Math.max(
-    0,
-    Math.min(
-      valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY),
-      range.value,
-    ),
-  );
-
-  degrees.value = Math.min(
-    Math.ceil(raw.value / step.value) * step.value,
-    range.value,
-  );
+  setRaw(valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY));
+  setDegrees(raw.value);
 });
 
 const emit = defineEmits(["update:modelValue"]);
