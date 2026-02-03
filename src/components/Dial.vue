@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { clampBetween } from "../helpers/helpers.ts";
 
 interface Props {
   modelValue: number;
@@ -26,19 +27,16 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const clampBetween = (min: number, max: number, val: number) =>
-  Math.max(min, Math.min(max, val));
-
 const offset = computed<number>(() => props.offset ?? 0);
 const step = computed<number>(() => props.step ?? 1);
-const defaultRef = computed<number>(() => props.default ?? props.modelValue ?? 0);
-const startRotation = computed<number>(() => -180 + offset.value);
 const range = computed<number>(() => 360 - 2 * offset.value);
 
 const mouseYOnMouseDown = ref<number | undefined>(undefined);
 const valueOnMouseDown = ref<number>(0);
+
+const zeroValueRotation = computed<number>(() => -180 + offset.value);
 const dialHeadRotation = computed<number>(
-  () => degrees.value + startRotation.value,
+  () => zeroValueRotation.value + degrees.value,
 );
 
 const degrees = ref<number>(0);
@@ -54,12 +52,6 @@ const normalized = computed<number>(() => degrees.value / range.value);
 const handleMouseDown = (event: any) => {
   mouseYOnMouseDown.value = event.clientY;
   valueOnMouseDown.value = degrees.value;
-};
-
-const handleMousewheel = (event: any) => {
-  event.wheelDelta > 0
-    ? setDegrees(degrees.value + step.value)
-    : setDegrees(degrees.value - step.value);
 };
 
 addEventListener("mouseup", () => {
@@ -80,9 +72,14 @@ addEventListener("mousemove", (event: any) => {
   );
 });
 
+const handleMousewheel = (event: any) => {
+  event.wheelDelta > 0
+      ? setDegrees(degrees.value + step.value)
+      : setDegrees(degrees.value - step.value);
+};
+
 const emit = defineEmits(["update:modelValue"]);
 watch(normalized, (newValue) => emit("update:modelValue", newValue));
-onMounted(() => emit("update:modelValue", defaultRef.value));
 
 watch(props, (newValue) => setDegrees(range.value * newValue.modelValue));
 </script>
