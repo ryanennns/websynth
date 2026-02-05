@@ -55,11 +55,11 @@ sin();
         <div class="flex flex-col">
           <div class="flex flex-col justify-center items-center">
             <Dial
-              :max="3"
+              :max="5"
               :min="0"
               :step="0.15"
               :offset="30"
-              :default="1"
+              :default="0.75"
               :head="DialHead"
               :back="DialBack"
               v-model="sineMulti"

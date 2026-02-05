@@ -31,7 +31,7 @@ const props = defineProps<Props>();
 const offset = computed<number>(() => props.offset ?? 0);
 const angleRange = computed<number>(() => 360 - 2 * offset.value);
 const valueRange = computed<number>(() => props.max - props.min);
-const step = computed<number>(() => props.step ?? 1);
+const step = computed<number>(() => props.step ?? valueRange.value / 100);
 
 const degreesPerValue = computed<number>(
   () => angleRange.value / valueRange.value,
@@ -46,11 +46,10 @@ const dialHeadRotation = computed<number>(
 );
 
 const degrees = ref<number>(
-  (() =>
-    props.min < 0
-      ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
+  props.min < 0
+    ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
         angleRange.value
-      : ((props.default ?? 0) / valueRange.value) * angleRange.value)(),
+    : ((props.default ?? 0) / valueRange.value) * angleRange.value,
 );
 const setDegrees = (val: number) => {
   degrees.value = clampBetween(0, angleRange.value, val);
@@ -76,11 +75,23 @@ addEventListener("mousemove", (event: any) => {
     return;
   }
 
-  if (mouseYOnMouseDown.value - event.clientY > step.value) {}
+  if (
+    Math.abs(mouseYOnMouseDown.value - event.clientY) <
+    step.value * degreesPerValue.value
+  ) {
+    return;
+  }
+
+  const amountToAdd = step.value * degreesPerValue.value;
 
   setDegrees(
-    valueOnMouseDown.value + (mouseYOnMouseDown.value - event.clientY),
+    mouseYOnMouseDown.value - event.clientY > 0
+      ? valueOnMouseDown.value + amountToAdd
+      : valueOnMouseDown.value - amountToAdd,
   );
+
+  valueOnMouseDown.value = degrees.value;
+  mouseYOnMouseDown.value = event.clientY;
 });
 
 const handleMousewheel = (event: any) => {
@@ -102,9 +113,19 @@ watch(props, (newValue) =>
 
 const emit = defineEmits(["update:modelValue"]);
 watch(normalized, (newValue) =>
-  emit("update:modelValue", props.min + newValue * valueRange.value),
+  emit(
+    "update:modelValue",
+    clampBetween(props.min, props.max, props.min + newValue * valueRange.value),
+  ),
 );
 onMounted(() =>
-  emit("update:modelValue", props.min + normalized.value * valueRange.value),
+  emit(
+    "update:modelValue",
+    clampBetween(
+      props.min,
+      props.max,
+      props.min + normalized.value * valueRange.value,
+    ),
+  ),
 );
 </script>
