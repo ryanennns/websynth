@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue";
 import DialHead from "./Dials/Default/DialHead.vue";
 import DialBack from "./Dials/Default/DialBack.vue";
 import Dial from "./Dial.vue";
@@ -81,7 +81,10 @@ const sin = () => {
   }
   counter += 0.05;
 
-  emit("update:modelValue", Math.sin(coefficient.value * counter) * amplitude.value + offset.value);
+  emit(
+    "update:modelValue",
+    Math.sin(coefficient.value * counter) * amplitude.value + offset.value,
+  );
 
   setTimeout(sin, 10);
 };
