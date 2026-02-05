@@ -32,9 +32,11 @@ const offset = computed<number>(() => props.offset ?? 0);
 const angleRange = computed<number>(() => 360 - 2 * offset.value);
 const valueRange = computed<number>(() => props.max - props.min);
 const step = computed<number>(() => props.step ?? valueRange.value / 100);
-
 const degreesPerValue = computed<number>(
   () => angleRange.value / valueRange.value,
+);
+const degreesPerStep = computed<number>(
+  () => step.value * degreesPerValue.value,
 );
 
 const mouseYOnMouseDown = ref<number | undefined>(undefined);
@@ -76,13 +78,12 @@ addEventListener("mousemove", (event: any) => {
   }
 
   if (
-    Math.abs(mouseYOnMouseDown.value - event.clientY) <
-    step.value * degreesPerValue.value
+    Math.abs(mouseYOnMouseDown.value - event.clientY) < degreesPerStep.value
   ) {
     return;
   }
 
-  const amountToAdd = step.value * degreesPerValue.value;
+  const amountToAdd = degreesPerStep.value;
 
   setDegrees(
     mouseYOnMouseDown.value - event.clientY > 0
@@ -95,7 +96,7 @@ addEventListener("mousemove", (event: any) => {
 });
 
 const handleMousewheel = (event: any) => {
-  const delta = step.value * degreesPerValue.value;
+  const delta = degreesPerStep.value;
 
   event.wheelDelta > 0
     ? setDegrees(degrees.value + delta)

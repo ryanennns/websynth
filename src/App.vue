@@ -1,36 +1,11 @@
 <script setup lang="ts">
 import Dial from "./components/Dial.vue";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import DialBack from "./components/Dials/Default/DialBack.vue";
 import DialHead from "./components/Dials/Default/DialHead.vue";
+import Lfo from "./components/Lfo.vue";
 
 const foo = ref<number>(0);
-
-let counter = 0;
-const sineMulti = ref<number>(0.5);
-const sineAmpli = ref<number>(0.5);
-const sineOffset = ref<number>(0);
-
-// watch(sineOffset, () => console.log(sineOffset.value));
-
-watch([sineMulti, sineAmpli, sineOffset], () => (counter = 0));
-
-let on = ref<boolean>(false);
-const sin = () => {
-  if (!on.value) {
-    return;
-  }
-
-  const val = Math.sin(sineMulti.value * counter);
-
-  counter += 0.05;
-
-  foo.value = val * sineAmpli.value + sineOffset.value;
-
-  setTimeout(sin, 10);
-};
-
-sin();
 </script>
 
 <template>
@@ -49,60 +24,6 @@ sin();
       />
       {{ Math.round(foo) }}
     </div>
-    <div class="rounded-md p-2 bg-gray-400 flex flex-col justify-center gap-4">
-      <div class="flex justify-center items-center">
-        <h1>LFO</h1>
-        <div class="flex flex-col">
-          <div class="flex flex-col justify-center items-center">
-            <Dial
-              :max="5"
-              :min="0"
-              :step="0.15"
-              :offset="30"
-              :default="0.75"
-              :head="DialHead"
-              :back="DialBack"
-              v-model="sineMulti"
-              class="h-24 w-24"
-            />
-            <p>{{ sineMulti.toFixed(2) }}</p>
-            <p>Rate</p>
-          </div>
-          <div class="flex flex-col justify-center items-center">
-            <Dial
-              :max="100"
-              :min="0"
-              :step="1"
-              :offset="30"
-              :default="25"
-              :head="DialHead"
-              :back="DialBack"
-              v-model="sineAmpli"
-              class="h-24 w-24"
-            />
-            <p>{{ sineAmpli.toFixed(2) }}</p>
-            <p>Amplitude</p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center">
-          <Dial
-            :max="100"
-            :min="-100"
-            :step="1"
-            :offset="30"
-            :default="50"
-            :head="DialHead"
-            :back="DialBack"
-            v-model="sineOffset"
-            class="h-32 w-32"
-          />
-          <p>{{ sineOffset.toFixed(2) }}</p>
-          <p>Offset</p>
-        </div>
-      </div>
-      <button class="bg-gray-900 text-white" @click="() => (on = !on) && sin()">
-        toggle
-      </button>
-    </div>
+    <Lfo v-model="foo" />
   </div>
 </template>
