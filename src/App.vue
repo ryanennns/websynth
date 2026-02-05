@@ -48,57 +48,61 @@ sin();
         class="h-32 w-32"
       />
       {{ Math.round(foo) }}
-      <button @click="() => (on = !on) && sin()">toggle</button>
     </div>
-    <div class="bg-gray-400 flex justify-center items-center">
-      <h1>LFO</h1>
-      <div class="flex flex-col">
-        <div class="flex flex-col justify-center items-center">
-          <Dial
-            :max="3"
-            :min="0"
-            :step="0.15"
-            :offset="30"
-            :default="1"
-            :head="DialHead"
-            :back="DialBack"
-            v-model="sineMulti"
-            class="h-24 w-24"
-          />
-          <p>{{ sineMulti.toFixed(2) }}</p>
-          <p>Rate</p>
+    <div class="rounded-md p-2 bg-gray-400 flex flex-col justify-center gap-4">
+      <div class="flex justify-center items-center">
+        <h1>LFO</h1>
+        <div class="flex flex-col">
+          <div class="flex flex-col justify-center items-center">
+            <Dial
+              :max="3"
+              :min="0"
+              :step="0.15"
+              :offset="30"
+              :default="1"
+              :head="DialHead"
+              :back="DialBack"
+              v-model="sineMulti"
+              class="h-24 w-24"
+            />
+            <p>{{ sineMulti.toFixed(2) }}</p>
+            <p>Rate</p>
+          </div>
+          <div class="flex flex-col justify-center items-center">
+            <Dial
+              :max="100"
+              :min="0"
+              :step="1"
+              :offset="30"
+              :default="25"
+              :head="DialHead"
+              :back="DialBack"
+              v-model="sineAmpli"
+              class="h-24 w-24"
+            />
+            <p>{{ sineAmpli.toFixed(2) }}</p>
+            <p>Amplitude</p>
+          </div>
         </div>
         <div class="flex flex-col justify-center items-center">
           <Dial
             :max="100"
-            :min="0"
+            :min="-100"
             :step="1"
             :offset="30"
-            :default="25"
+            :default="50"
             :head="DialHead"
             :back="DialBack"
-            v-model="sineAmpli"
-            class="h-24 w-24"
+            v-model="sineOffset"
+            class="h-32 w-32"
           />
-          <p>{{ sineAmpli.toFixed(2) }}</p>
-          <p>Amplitude</p>
+          <p>{{ sineOffset.toFixed(2) }}</p>
+          <p>Offset</p>
         </div>
       </div>
-      <div class="flex flex-col justify-center items-center">
-        <Dial
-          :max="100"
-          :min="-100"
-          :step="1"
-          :offset="30"
-          :default="50"
-          :head="DialHead"
-          :back="DialBack"
-          v-model="sineOffset"
-          class="h-32 w-32"
-        />
-        <p>{{ sineOffset.toFixed(2) }}</p>
-        <p>Offset</p>
-      </div>
+      <button class="bg-gray-900 text-white" @click="() => (on = !on) && sin()">
+        toggle
+      </button>
     </div>
   </div>
 </template>
