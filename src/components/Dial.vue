@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref, watch} from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { clampBetween } from "../helpers/helpers.ts";
 
 interface Props {
@@ -41,7 +41,9 @@ const dialHeadRotation = computed<number>(
   () => zeroValueRotation.value + degrees.value,
 );
 
-const degrees = ref<number>((props.default ?? 0));
+const degrees = ref<number>(
+  ((props.default ?? 0) / valueRange.value) * angleRange.value,
+);
 const setDegrees = (val: number) => {
   degrees.value = clampBetween(0, angleRange.value, val);
 };
@@ -78,13 +80,34 @@ const handleMousewheel = (event: any) => {
 };
 
 const emit = defineEmits(["update:modelValue"]);
-watch(normalized, (newValue) =>
-  emit("update:modelValue", newValue * valueRange.value),
-);
+watch(normalized, (newValue) => {
+  console.log(
+    `emitting update:modelValue to ${props.min} + (${newValue} * ${valueRange.value}) = ${props.min + newValue * valueRange.value}`,
+  );
+  emit("update:modelValue", props.min + newValue * valueRange.value);
+});
 
-watch(props, (newValue) =>
-  setDegrees((newValue.modelValue / props.max) * angleRange.value),
-);
+watch(props, (newValue) => {
+  console.log(
+    `setting degrees to (${newValue.modelValue} / ${valueRange.value}) * ${angleRange.value} = ${(newValue.modelValue / props.max) * angleRange.value}`,
+  );
 
-onMounted(() => emit("update:modelValue", normalized.value * valueRange.value))
+  if (props.min < 0) {
+    setDegrees(
+      ((newValue.modelValue + valueRange.value / 2) / valueRange.value) *
+        angleRange.value,
+    );
+
+    return;
+  }
+
+  setDegrees((newValue.modelValue / valueRange.value) * angleRange.value);
+});
+
+onMounted(() => {
+  console.log(
+    `emitting update:modelValue to ${props.min} + ${normalized.value} * ${valueRange.value} = ${props.min + normalized.value * valueRange.value}`,
+  );
+  emit("update:modelValue", props.min + normalized.value * valueRange.value);
+});
 </script>
