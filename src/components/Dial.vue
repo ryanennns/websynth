@@ -27,22 +27,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import { clampBetween } from "../helpers/helpers.ts";
-import RightClickMenu from "./RightClickMenu.vue";
-import type { MenuItemType } from "../core.ts";
-
-const defaultDegrees = computed<number>(() =>
-  props.min < 0
-    ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
-      angleRange.value
-    : ((props.default ?? 0) / valueRange.value) * angleRange.value,
-);
-
-const onRightClickMenuItemSelect = (e: MenuItemType) => {
-  if (e.key === "reset") {
-    setDegrees(defaultDegrees.value);
-  }
-};
+import { clampBetween } from "@/helpers/helpers.ts";
+import RightClickMenu from "@/components/RightClickMenu/RightClickMenu.vue";
+import type { MenuItemType } from "@/core.ts";
 
 interface Props {
   modelValue: number;
@@ -55,7 +42,18 @@ interface Props {
   back?: any;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>();const defaultDegrees = computed<number>(() =>
+    props.min < 0
+        ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
+        angleRange.value
+        : ((props.default ?? 0) / valueRange.value) * angleRange.value,
+);
+
+const onRightClickMenuItemSelect = (e: MenuItemType) => {
+  if (e.key === "reset") {
+    setDegrees(defaultDegrees.value);
+  }
+};
 
 const offset = computed<number>(() => props.offset ?? 0);
 const angleRange = computed<number>(() => 360 - 2 * offset.value);
