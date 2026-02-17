@@ -35,7 +35,7 @@ import MenuHeader from "./MenuHeader.vue";
 interface Props {
   menuItems?: MenuItemType[];
   menuGroups?: {
-    header: string;
+    header?: string;
     menuItems: MenuItemType[];
   }[];
 }

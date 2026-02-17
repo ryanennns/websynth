@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import Dial from "./components/Dial.vue";
-import { ref, shallowRef } from "vue";
 import DialBack from "./components/Dials/Default/DialBack.vue";
 import DialHead from "./components/Dials/Default/DialHead.vue";
 import Lfo from "./components/Lfo.vue";
-
-const state = ref<{
-  a: number;
-  b: number;
-  c: number;
-}>({
-  a: 0,
-  b: 0,
-  c: 0,
-});
-
-const selectedTarget = shallowRef<"a" | "b" | "c">("a");
+import { matrix } from "@/controllers.ts";
 </script>
 
 <template>
@@ -29,10 +17,10 @@ const selectedTarget = shallowRef<"a" | "b" | "c">("a");
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="state.a"
+          v-model="matrix[0]![0]!"
           class="h-32 w-32"
         />
-        {{ Math.round(state.a) }}
+        {{ Math.round(matrix[0]![0]!) }}
       </div>
       <div class="flex-col flex justify-center items-center">
         <Dial
@@ -42,10 +30,10 @@ const selectedTarget = shallowRef<"a" | "b" | "c">("a");
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="state.b"
+          v-model="matrix[0]![1]!"
           class="h-32 w-32"
         />
-        {{ Math.round(state.b) }}
+        {{ Math.round(matrix[0]![1]!) }}
       </div>
       <div class="flex-col flex justify-center items-center">
         <Dial
@@ -55,17 +43,12 @@ const selectedTarget = shallowRef<"a" | "b" | "c">("a");
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="state.c"
+          v-model="matrix[0]![2]!"
           class="h-32 w-32"
         />
-        {{ Math.round(state.c) }}
+        {{ Math.round(matrix[0]![2]!) }}
       </div>
     </div>
-    <Lfo v-model="state[selectedTarget]" />
+    <Lfo v-model="matrix[0]![0]!" />
   </div>
-  <select v-model="selectedTarget">
-    <option value="a">a</option>
-    <option value="b">b</option>
-    <option value="c">c</option>
-  </select>
 </template>

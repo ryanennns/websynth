@@ -3,7 +3,6 @@
     @click="onRightClickMenuItemSelect"
     :menu-groups="[
       {
-        header: 'Main Functions',
         menuItems: [
           { title: 'Reset...', key: 'reset' },
           // { title: 'Link to Controller' },
@@ -42,11 +41,12 @@ interface Props {
   back?: any;
 }
 
-const props = defineProps<Props>();const defaultDegrees = computed<number>(() =>
-    props.min < 0
-        ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
-        angleRange.value
-        : ((props.default ?? 0) / valueRange.value) * angleRange.value,
+const props = defineProps<Props>();
+const defaultDegrees = computed<number>(() =>
+  props.min < 0
+    ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
+      angleRange.value
+    : ((props.default ?? 0) / valueRange.value) * angleRange.value,
 );
 
 const onRightClickMenuItemSelect = (e: MenuItemType) => {
