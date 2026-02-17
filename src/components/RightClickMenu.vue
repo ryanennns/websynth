@@ -1,35 +1,63 @@
 <template>
-  <div class="relative">
-    <div class="fixed opacity-10 bg-red-300" style="width: 101vw; height: 101vh; left: 0; top: 0; display:none;" @click="menuBackgroundClick" ref="menuBackground"></div>
-    <ul class="text-gray-200 fixed flex-col bg-gray-800" ref="menu" style="display: none">
-      <slot/>
+  <div class="relative" @contextmenu="onContextMenu">
+    <div
+      class="fixed"
+      style="width: 101vw; height: 101vh; left: 0; top: 0; display: none"
+      @click="close"
+      @contextmenu="(e) => e.preventDefault"
+      ref="menuBackground"
+    ></div>
+    <ul
+      class="text-gray-200 fixed flex-col bg-gray-800 cursor-pointer"
+      ref="menu"
+      style="display: none"
+    >
+      <MenuItem
+        v-for="item in menuItems"
+        :key="item.title"
+        @click="emit('click', item) > close()"
+        >{{ item.title }}</MenuItem
+      >
     </ul>
+    <slot />
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue";
+import MenuItem from "./MenuItem.vue";
+
+interface Props {
+  menuItems: {
+    title: string;
+  }[];
+}
+
+defineProps<Props>();
+
+const emit = defineEmits(["close", "click"]);
 
 const menuBackground = ref<HTMLDivElement>();
 const menu = ref<HTMLDivElement>();
 
-const menuBackgroundClick = (e: PointerEvent) => {
-  e.preventDefault;
+const close = () => {
   menuBackground.value!.style.display = "none";
   menu.value!.style.display = "none";
-}
+
+  emit("close");
+};
 
 const onContextMenu = (e: PointerEvent) => {
-  console.log({
-    x: e.clientX,
-    y: e.clientY,
-  })
-
   e.preventDefault();
+
+  if (menu.value!.style.display !== "none") {
+    return;
+  }
+
   menu.value!.style.left = `${e.clientX}px`;
   menu.value!.style.top = `${e.clientY}px`;
-  menuBackground.value!.style.display = "block";
   menu.value!.style.display = "flex";
-  console.log("onContextMenu");
+
+  menuBackground.value!.style.display = "block";
 };
 </script>
