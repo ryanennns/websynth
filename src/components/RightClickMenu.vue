@@ -8,7 +8,7 @@
       ref="menuBackground"
     ></div>
     <ul
-      class="text-gray-200 fixed flex-col bg-gray-800 cursor-pointer"
+      class="z-[9999] text-gray-200 fixed flex-col bg-gray-800 cursor-pointer"
       ref="menu"
       style="display: none"
     >
