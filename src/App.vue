@@ -43,32 +43,8 @@
     </div>
     <Lfo v-model="matrix[lfoOutput.x]![lfoOutput.y]!" />
   </div>
-  <div class="p-4">
-    <div class="flex gap-4">
-      <div class="flex flex-col">
-        <label for="x">X (0–100)</label>
-        <input
-          id="x"
-          type="number"
-          min="0"
-          max="100"
-          v-model.number="lfoOutput.x"
-          class="border px-2 py-1"
-        />
-      </div>
-
-      <div class="flex flex-col">
-        <label for="y">Y (0–100)</label>
-        <input
-          id="y"
-          type="number"
-          min="0"
-          max="100"
-          v-model.number="lfoOutput.y"
-          class="border px-2 py-1"
-        />
-      </div>
-    </div>
+  <div>
+    <MatrixComponent :x="10" :y="10" />
   </div>
 </template>
 
@@ -78,6 +54,7 @@ import DialBack from "@/components/Dials/Default/DialBack.vue";
 import DialHead from "@/components/Dials/Default/DialHead.vue";
 import Lfo from "@/components/Lfo.vue";
 import { matrix } from "@/controllers.ts";
+import MatrixComponent from "@/components/Matrix.vue";
 import { ref } from "vue";
 
 interface CoordinateSet {
