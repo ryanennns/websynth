@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import MenuItem from "./MenuItem.vue";
-import { type MenuItemType } from "../core.ts";
+import { type MenuItemType } from "@/core.ts";
 import MenuHeader from "./MenuHeader.vue";
 
 interface Props {
