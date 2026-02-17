@@ -1,13 +1,13 @@
 <template>
   <RightClickMenu
-    @click="(e) => console.log('click', e)"
+    @click="onRightClickMenuItemSelect"
     :menu-groups="[
       {
         header: 'Main Functions',
         menuItems: [
-          { title: 'Reset...' },
-          { title: 'Link to Controller' },
-          { title: 'one more time!' },
+          { title: 'Reset...', key: 'reset' },
+          // { title: 'Link to Controller' },
+          // { title: 'one more time!' },
         ],
       },
     ]"
@@ -29,6 +29,20 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { clampBetween } from "../helpers/helpers.ts";
 import RightClickMenu from "./RightClickMenu.vue";
+import type { MenuItemType } from "../core.ts";
+
+const defaultDegrees = computed<number>(() =>
+  props.min < 0
+    ? (((props.default ?? 0) + valueRange.value / 2) / valueRange.value) *
+      angleRange.value
+    : ((props.default ?? 0) / valueRange.value) * angleRange.value,
+);
+
+const onRightClickMenuItemSelect = (e: MenuItemType) => {
+  if (e.key === "reset") {
+    setDegrees(defaultDegrees.value);
+  }
+};
 
 interface Props {
   modelValue: number;

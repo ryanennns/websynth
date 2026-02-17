@@ -13,7 +13,7 @@
       style="display: none"
     >
       <li v-for="menuGroup in menuGroups">
-        <MenuHeader>{{ menuGroup.header }}</MenuHeader>
+        <MenuHeader v-if="menuGroup.header">{{ menuGroup.header }}</MenuHeader>
         <MenuItem
           v-for="item in menuGroup.menuItems"
           :key="item.title"
