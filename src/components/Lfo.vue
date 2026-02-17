@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-md p-2 bg-gray-400 flex flex-col justify-center gap-4">
+  <div class="rounded-md p-2 bg-zinc-400 flex flex-col justify-center gap-4">
     <div class="flex justify-center items-center">
       <h1>LFO</h1>
       <div class="flex flex-col">
@@ -50,7 +50,7 @@
         <p>Offset</p>
       </div>
     </div>
-    <button class="bg-gray-900 text-white" @click="() => (on = !on) && sin()">
+    <button class="bg-zinc-900 text-white" @click="() => (on = !on) && sin()">
       {{ on ? "stop" : "start" }}
     </button>
   </div>

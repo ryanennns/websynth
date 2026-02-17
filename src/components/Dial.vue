@@ -1,7 +1,16 @@
 <template>
   <RightClickMenu
     @click="(e) => console.log('click', e)"
-    :menu-items="[{ title: 'Reset...' }, { title: 'Link to Controller' }, { title: 'Yeezy said they can kiss my whole ass' }]"
+    :menu-groups="[
+      {
+        header: 'Main Functions',
+        menuItems: [
+          { title: 'Reset...' },
+          { title: 'Link to Controller' },
+          { title: 'one more time!' },
+        ],
+      },
+    ]"
   >
     <div class="flex flex-col align-center items-center">
       <component :is="back">

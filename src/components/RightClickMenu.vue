@@ -1,23 +1,26 @@
 <template>
   <div class="relative" @contextmenu="onContextMenu">
     <div
-      class="fixed"
+      class="z-[9999] fixed"
       style="width: 101vw; height: 101vh; left: 0; top: 0; display: none"
       @click="close"
       @contextmenu="(e) => e.preventDefault"
       ref="menuBackground"
     ></div>
     <ul
-      class="z-[9999] text-gray-200 fixed flex-col bg-gray-800 cursor-pointer"
+      class="z-[9999] text-zinc-200 fixed flex-col bg-zinc-800"
       ref="menu"
       style="display: none"
     >
-      <MenuItem
-        v-for="item in menuItems"
-        :key="item.title"
-        @click="emit('click', item) > close()"
-        >{{ item.title }}</MenuItem
-      >
+      <li v-for="menuGroup in menuGroups">
+        <MenuHeader>{{ menuGroup.header }}</MenuHeader>
+        <MenuItem
+          v-for="item in menuGroup.menuItems"
+          :key="item.title"
+          @click="emit('click', item) > close()"
+          >{{ item.title }}</MenuItem
+        >
+      </li>
     </ul>
     <slot />
   </div>
@@ -26,10 +29,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import MenuItem from "./MenuItem.vue";
+import { type MenuItemType } from "../core.ts";
+import MenuHeader from "./MenuHeader.vue";
 
 interface Props {
-  menuItems: {
-    title: string;
+  menuItems?: MenuItemType[];
+  menuGroups?: {
+    header: string;
+    menuItems: MenuItemType[];
   }[];
 }
 
