@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 interface Props {
   x: number;
@@ -26,10 +26,17 @@ const m = ref<boolean[][]>(
   ),
 );
 const c = (x: number, y: number) =>
-  "w-6 h-6 " + (!!m.value[x - 1]![y - 1]! ? "bg-purple-500" : "bg-zinc-500");
+  "w-6 h-6 cursor-pointer " +
+  (!!m.value[x - 1]![y - 1]! ? "bg-purple-500" : "bg-zinc-500");
 
 c(1, 1);
 
-const onClick = (e: { x: number; y: number }) =>
-  (m.value![e.x - 1]![e.y - 1] = !m.value![e.x - 1]![e.y - 1]);
+const onClick = (e: { x: number; y: number }) => {
+  const v = m.value;
+  v![e.x - 1]![e.y - 1] = !v![e.x - 1]![e.y - 1];
+  m.value = [...v];
+};
+
+const emit = defineEmits(["update:modelValue"]);
+watch(m, (newM) => emit("update:modelValue", newM));
 </script>

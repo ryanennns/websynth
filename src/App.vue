@@ -9,10 +9,10 @@
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="matrix[0]![0]!"
+          v-model="generators[0]!"
           class="h-32 w-32"
         />
-        {{ Math.round(matrix[0]![0]!) }}
+        <p>{{ Math.round(generators[0]!) }}</p>
       </div>
       <div class="flex-col flex justify-center items-center">
         <Dial
@@ -22,10 +22,10 @@
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="matrix[0]![1]!"
+          v-model="generators[1]!"
           class="h-32 w-32"
         />
-        {{ Math.round(matrix[0]![1]!) }}
+        <p>{{ Math.round(generators[1]!) }}</p>
       </div>
       <div class="flex-col flex justify-center items-center">
         <Dial
@@ -35,16 +35,22 @@
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="matrix[0]![2]!"
+          v-model="generators[2]!"
           class="h-32 w-32"
         />
-        {{ Math.round(matrix[0]![2]!) }}
+        <p>{{ Math.round(generators[2]!) }}</p>
       </div>
     </div>
-    <Lfo v-model="matrix[lfoOutput.x]![lfoOutput.y]!" />
+    <Lfo v-model="effects[0]!" />
+    <Lfo v-model="effects[1]!" />
+    <Lfo v-model="effects[2]!" />
   </div>
-  <div>
-    <MatrixComponent :x="10" :y="10" />
+  <div class="p-12">
+    <MatrixComponent
+      :x="controlSurfaceX"
+      :y="controlSurfaceY"
+      v-model="controlSurface"
+    />
   </div>
 </template>
 
@@ -53,14 +59,38 @@ import Dial from "@/components/Dial.vue";
 import DialBack from "@/components/Dials/Default/DialBack.vue";
 import DialHead from "@/components/Dials/Default/DialHead.vue";
 import Lfo from "@/components/Lfo.vue";
-import { matrix } from "@/controllers.ts";
 import MatrixComponent from "@/components/Matrix.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-interface CoordinateSet {
-  x: number;
-  y: number;
-}
+const generators = ref<number[]>([0, 0, 0]);
 
-const lfoOutput = ref<CoordinateSet>({ x: 0, y: 0 });
+const effects = ref<number[]>([0, 0, 0]);
+
+const controlSurfaceX = 3;
+const controlSurfaceY = 3;
+const controlSurface = ref<boolean[][]>(
+  Array.from({ length: controlSurfaceX }).map(() =>
+    Array.from({
+      length: controlSurfaceY,
+    }).map(() => false),
+  ),
+);
+
+const loop = () => {
+  for (let gen = 0; gen < controlSurface.value.length; gen++) {
+    for (let eff = 0; eff < controlSurface.value[gen]!.length; eff++) {
+      if (controlSurface.value![gen]![eff]) {
+        generators.value![gen] = effects.value![eff] || 0;
+      }
+    }
+  }
+
+  setTimeout(loop, 15);
+};
+
+loop();
+
+watch(generators, (newValue) => {
+  console.log(JSON.parse(JSON.stringify(newValue)));
+});
 </script>
