@@ -4,8 +4,8 @@
       <div class="flex-col flex justify-center items-center">
         <Dial
           :max="100"
-          :min="0"
-          :offset="30"
+          :min="-100"
+          :offset="0"
           :default="0"
           :head="DialHead"
           :back="DialBack"

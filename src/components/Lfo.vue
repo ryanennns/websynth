@@ -41,7 +41,7 @@
           :min="-100"
           :step="1"
           :offset="30"
-          :default="50"
+          :default="0"
           :head="DialHead"
           :back="DialBack"
           v-model="offset"
