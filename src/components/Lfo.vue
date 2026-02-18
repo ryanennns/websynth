@@ -91,6 +91,9 @@ const offset = ref<number>(0);
 const amplitude = ref<number>(0.5);
 const frequency = ref<number>(0.5);
 
+const history: (number | undefined)[] = Array.from({
+  length: canvas.value?.getContext("2d")!.canvas.width ?? 300,
+}).map(() => undefined);
 const draw = () => {
   const plotSine = (ctx: CanvasRenderingContext2D) => {
     const width = ctx.canvas.width;
@@ -101,19 +104,17 @@ const draw = () => {
     ctx.strokeStyle = "rgb(66,44,255)";
 
     let x = 0;
-    let y = 0;
+    history.shift();
+    history.push(
+      height / 2 +
+        amplitude.value * Math.sin((x + counter.value) * frequency.value),
+    );
     while (x < width) {
-      y =
-        height / 2 +
-        amplitude.value * Math.sin((x + counter.value) * frequency.value);
-      ctx.lineTo(x, y);
+      ctx.lineTo(x, history[x]!);
       x++;
     }
     ctx.stroke();
     ctx.save();
-
-    ctx.stroke();
-    ctx.restore();
   };
 
   const ctx = canvas.value?.getContext("2d");
