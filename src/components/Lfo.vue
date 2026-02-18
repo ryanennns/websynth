@@ -44,13 +44,25 @@
           :head="DialHead"
           :back="DialBack"
           v-model="offset"
-          class="h-32 w-32"
+          class="h-24 w-24"
         />
         <p>{{ offset.toFixed(2) }}</p>
         <p>Offset</p>
+        <Dial
+          :max="360"
+          :min="0"
+          :step="15"
+          :default="0"
+          :head="DialHead"
+          :back="DialBack"
+          v-model="phase"
+          class="h-24 w-24"
+        />
+        <p>{{ phase.toFixed(2) }}</p>
+        <p>Phase</p>
       </div>
     </div>
-    <button class="bg-zinc-900 text-white" @click="() => (on = !on) && sin()">
+    <button class="bg-zinc-900 text-white" @click="onclick">
       {{ on ? "stop" : "start" }}
     </button>
   </div>
@@ -61,6 +73,7 @@ import { ref } from "vue";
 import DialHead from "./Dials/Default/DialHead.vue";
 import DialBack from "./Dials/Default/DialBack.vue";
 import Dial from "./Dial.vue";
+import { counter } from "@/core.ts";
 
 interface Props {
   modelValue: number;
@@ -70,24 +83,38 @@ defineProps<Props>();
 const emit = defineEmits(["update:modelValue"]);
 
 let on = ref<boolean>(true);
+const phase = ref<number>(0.0);
 const offset = ref<number>(0);
 const amplitude = ref<number>(0.5);
 const coefficient = ref<number>(0.5);
 
-let counter = 0;
 const sin = () => {
   if (!on.value) {
     return;
   }
-  counter += 0.05;
 
-  emit(
-    "update:modelValue",
-    Math.sin(coefficient.value * counter) * amplitude.value + offset.value,
-  );
+  const p = ((2 * Math.PI) / 360) * phase.value;
+
+  const value =
+    Math.sin(p + coefficient.value * counter.value) * amplitude.value +
+    offset.value;
+
+  emit("update:modelValue", value);
 
   setTimeout(sin, 10);
 };
 
 sin();
+
+const onclick = () => {
+  on.value = !on.value;
+
+  if (on.value) {
+    sin();
+  }
+
+  if (!on.value) {
+    emit("update:modelValue", 0);
+  }
+};
 </script>

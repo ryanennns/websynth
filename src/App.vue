@@ -60,7 +60,8 @@ import DialBack from "@/components/Dials/Default/DialBack.vue";
 import DialHead from "@/components/Dials/Default/DialHead.vue";
 import Lfo from "@/components/Lfo.vue";
 import MatrixComponent from "@/components/Matrix.vue";
-import { ref, watch } from "vue";
+import { ref } from "vue";
+import { counter } from "@/core.ts";
 
 const generators = ref<number[]>([0, 0, 0]);
 
@@ -77,20 +78,20 @@ const controlSurface = ref<boolean[][]>(
 );
 
 const loop = () => {
+  counter.value += 0.05;
+
+  generators.value = generators.value.map(() => 0);
+
   for (let gen = 0; gen < controlSurface.value.length; gen++) {
     for (let eff = 0; eff < controlSurface.value[gen]!.length; eff++) {
       if (controlSurface.value![gen]![eff]) {
-        generators.value![gen] = effects.value![eff] || 0;
+        generators.value[gen]! += effects.value![eff] || 0;
       }
     }
   }
 
-  setTimeout(loop, 15);
+  setTimeout(loop, 10);
 };
 
 loop();
-
-watch(generators, (newValue) => {
-  console.log(JSON.parse(JSON.stringify(newValue)));
-});
 </script>
