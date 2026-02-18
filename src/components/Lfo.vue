@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-md p-2 bg-zinc-400 flex flex-col justify-center gap-4">
-    <canvas ref="canvas" />
+    <SineGraph :model-value="v" />
     <h1 class="text-center font-bold">LFO</h1>
     <div class="flex justify-center items-center">
       <div class="flex flex-col">
@@ -75,6 +75,7 @@ import DialHead from "./Dials/Default/DialHead.vue";
 import DialBack from "./Dials/Default/DialBack.vue";
 import Dial from "./Dial.vue";
 import { counter } from "@/core.ts";
+import SineGraph from "@/components/SineGraph.vue";
 
 interface Props {
   modelValue: number;
@@ -83,55 +84,11 @@ interface Props {
 defineProps<Props>();
 const emit = defineEmits(["update:modelValue"]);
 
-let canvas = ref<HTMLCanvasElement>();
-
 let on = ref<boolean>(true);
 const phase = ref<number>(0.0);
 const offset = ref<number>(0);
 const amplitude = ref<number>(0.5);
 const frequency = ref<number>(0.5);
-
-const history: (number | undefined)[] = Array.from({
-  length: canvas.value?.getContext("2d")!.canvas.width ?? 300,
-}).map(() => undefined);
-const draw = () => {
-  const plotSine = (ctx: CanvasRenderingContext2D) => {
-    const width = ctx.canvas.width;
-    const height = ctx.canvas.height;
-
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgb(66,44,255)";
-
-    let x = 0;
-    history.shift();
-    history.push(
-      height / 2 +
-        amplitude.value * Math.sin((x + counter.value) * frequency.value),
-    );
-    while (x < width) {
-      ctx.lineTo(x, history[x]!);
-      x++;
-    }
-    ctx.stroke();
-    ctx.save();
-  };
-
-  const ctx = canvas.value?.getContext("2d");
-
-  if (!ctx) {
-    requestAnimationFrame(draw);
-    return;
-  }
-
-  ctx.clearRect(0, 0, 500, 500);
-
-  plotSine(ctx);
-
-  requestAnimationFrame(draw);
-};
-
-requestAnimationFrame(draw);
 
 const v = computed<number>(() => {
   const p = ((2 * Math.PI) / 360) * phase.value;

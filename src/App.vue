@@ -1,7 +1,11 @@
 <template>
   <div class="flex flex-row gap-16 p-4">
-    <div class="flex gap-8 flex-col">
-      <div class="flex-col flex justify-center items-center">
+    <div class="grid grid-rows-2 grid-cols-2 gap-3">
+      <div
+        class="flex-col flex justify-center items-center"
+        v-for="i in controlSurfaceX"
+        :key="i"
+      >
         <Dial
           :max="100"
           :min="-100"
@@ -9,37 +13,11 @@
           :default="0"
           :head="DialHead"
           :back="DialBack"
-          v-model="generators[0]!"
+          v-model="generators[i - 1]!"
           class="h-32 w-32"
         />
-        <p>{{ Math.round(generators[0]!) }}</p>
-        <canvas ref="canvas" />
-      </div>
-      <div class="flex-col flex justify-center items-center">
-        <Dial
-          :max="100"
-          :min="-100"
-          :offset="0"
-          :default="0"
-          :head="DialHead"
-          :back="DialBack"
-          v-model="generators[1]!"
-          class="h-32 w-32"
-        />
-        <p>{{ Math.round(generators[1]!) }}</p>
-      </div>
-      <div class="flex-col flex justify-center items-center">
-        <Dial
-          :max="100"
-          :min="-100"
-          :offset="0"
-          :default="0"
-          :head="DialHead"
-          :back="DialBack"
-          v-model="generators[2]!"
-          class="h-32 w-32"
-        />
-        <p>{{ Math.round(generators[2]!) }}</p>
+        <p>{{ Math.round(generators[i - 1]!) }}</p>
+        <SineGraph :model-value="generators[i - 1]!" />
       </div>
     </div>
     <Lfo v-model="effects[0]!" />
@@ -61,15 +39,20 @@ import DialBack from "@/components/Dials/Default/DialBack.vue";
 import DialHead from "@/components/Dials/Default/DialHead.vue";
 import Lfo from "@/components/Lfo.vue";
 import MatrixComponent from "@/components/Matrix.vue";
-import { onMounted, ref, unref } from "vue";
+import { ref } from "vue";
 import { counter } from "@/core.ts";
+import SineGraph from "@/components/SineGraph.vue";
 
-const generators = ref<number[]>([0, 0, 0]);
-
-const effects = ref<number[]>([0, 0, 0]);
-
-const controlSurfaceX = 3;
+const controlSurfaceX = 4;
 const controlSurfaceY = 3;
+
+const generators = ref<number[]>(
+  Array.from({ length: controlSurfaceX }).map(() => 0),
+);
+const effects = ref<number[]>(
+  Array.from({ length: controlSurfaceY }).map(() => 0),
+);
+
 const controlSurface = ref<boolean[][]>(
   Array.from({ length: controlSurfaceX }).map(() =>
     Array.from({
@@ -95,44 +78,4 @@ const loop = () => {
 };
 
 loop();
-
-const canvas = ref();
-const history: (number | undefined)[] = Array.from({ length: 300 }).map(
-  () => undefined,
-);
-const draw = () => {
-  const plotSine = (ctx: CanvasRenderingContext2D) => {
-    const width = ctx.canvas.width;
-    const height = ctx.canvas.height;
-
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgb(66,44,255)";
-
-    let x = 0;
-    history.shift();
-    history.push(height / 2 + (unref(generators.value[0]) ?? 0));
-    while (x < width) {
-      ctx.lineTo(x, history[x]!);
-
-      x++;
-    }
-    ctx.stroke();
-    ctx.save();
-  };
-
-  const ctx = canvas.value?.getContext("2d");
-
-  if (!ctx) {
-    return;
-  }
-
-  ctx.clearRect(0, 0, 500, 500);
-
-  plotSine(ctx);
-
-  requestAnimationFrame(draw);
-};
-
-onMounted(() => requestAnimationFrame(draw));
 </script>
