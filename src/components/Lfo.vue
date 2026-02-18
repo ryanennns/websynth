@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-md p-2 bg-zinc-400 flex flex-col justify-center gap-4">
+    <h1 class="text-center font-bold">LFO</h1>
     <div class="flex justify-center items-center">
-      <h1>LFO</h1>
       <div class="flex flex-col">
         <div class="flex flex-col justify-center items-center">
           <Dial
@@ -65,11 +65,12 @@
     <button class="bg-zinc-900 text-white" @click="onclick">
       {{ on ? "stop" : "start" }}
     </button>
+    <canvas ref="canvas" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import DialHead from "./Dials/Default/DialHead.vue";
 import DialBack from "./Dials/Default/DialBack.vue";
 import Dial from "./Dial.vue";
@@ -82,24 +83,70 @@ interface Props {
 defineProps<Props>();
 const emit = defineEmits(["update:modelValue"]);
 
+let canvas = ref<HTMLCanvasElement>();
+
 let on = ref<boolean>(true);
 const phase = ref<number>(0.0);
 const offset = ref<number>(0);
 const amplitude = ref<number>(0.5);
 const coefficient = ref<number>(0.5);
 
+const draw = () => {
+  const plotSine = (ctx: CanvasRenderingContext2D) => {
+    const width = ctx.canvas.width;
+    const height = ctx.canvas.height;
+
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgb(66,44,255)";
+
+    let x = 0;
+    let y = 0;
+    const amp = amplitude.value;
+    const frequency = coefficient.value / 3;
+    ctx.moveTo(x, 50);
+    while (x < width) {
+      y = height / 2 + amp * Math.sin((x + counter.value) * frequency);
+      ctx.lineTo(x, y);
+      x++;
+    }
+    ctx.stroke();
+    ctx.save();
+
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const ctx = canvas.value?.getContext("2d");
+
+  if (!ctx) {
+    requestAnimationFrame(draw);
+    return;
+  }
+
+  ctx.clearRect(0, 0, 500, 500);
+
+  plotSine(ctx);
+
+  requestAnimationFrame(draw);
+};
+
+requestAnimationFrame(draw);
+
+const v = computed<number>(() => {
+  const p = ((2 * Math.PI) / 360) * phase.value;
+
+  return (
+    Math.sin(p + coefficient.value * counter.value) * amplitude.value +
+    offset.value
+  );
+});
 const sin = () => {
   if (!on.value) {
     return;
   }
 
-  const p = ((2 * Math.PI) / 360) * phase.value;
-
-  const value =
-    Math.sin(p + coefficient.value * counter.value) * amplitude.value +
-    offset.value;
-
-  emit("update:modelValue", value);
+  emit("update:modelValue", v.value);
 
   setTimeout(sin, 10);
 };
