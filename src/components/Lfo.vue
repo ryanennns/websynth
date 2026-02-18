@@ -1,5 +1,6 @@
 <template>
   <div class="rounded-md p-2 bg-zinc-400 flex flex-col justify-center gap-4">
+    <canvas ref="canvas" />
     <h1 class="text-center font-bold">LFO</h1>
     <div class="flex justify-center items-center">
       <div class="flex flex-col">
@@ -7,16 +8,16 @@
           <Dial
             :max="5"
             :min="0"
-            :step="0.15"
+            :step="0.25"
             :offset="30"
             :default="0.75"
             :head="DialHead"
             :back="DialBack"
-            v-model="coefficient"
+            v-model="frequency"
             class="h-24 w-24"
           />
-          <p>{{ coefficient.toFixed(2) }}</p>
-          <p>Rate</p>
+          <p>{{ frequency.toFixed(2) }}</p>
+          <p>Frequency</p>
         </div>
         <div class="flex flex-col justify-center items-center">
           <Dial
@@ -65,7 +66,6 @@
     <button class="bg-zinc-900 text-white" @click="onclick">
       {{ on ? "stop" : "start" }}
     </button>
-    <canvas ref="canvas" />
   </div>
 </template>
 
@@ -89,7 +89,7 @@ let on = ref<boolean>(true);
 const phase = ref<number>(0.0);
 const offset = ref<number>(0);
 const amplitude = ref<number>(0.5);
-const coefficient = ref<number>(0.5);
+const frequency = ref<number>(0.5);
 
 const draw = () => {
   const plotSine = (ctx: CanvasRenderingContext2D) => {
@@ -102,11 +102,10 @@ const draw = () => {
 
     let x = 0;
     let y = 0;
-    const amp = amplitude.value;
-    const frequency = coefficient.value / 3;
-    ctx.moveTo(x, 50);
     while (x < width) {
-      y = height / 2 + amp * Math.sin((x + counter.value) * frequency);
+      y =
+        height / 2 +
+        amplitude.value * Math.sin((x + counter.value) * frequency.value);
       ctx.lineTo(x, y);
       x++;
     }
@@ -115,7 +114,7 @@ const draw = () => {
 
     ctx.stroke();
     ctx.restore();
-  }
+  };
 
   const ctx = canvas.value?.getContext("2d");
 
@@ -137,7 +136,7 @@ const v = computed<number>(() => {
   const p = ((2 * Math.PI) / 360) * phase.value;
 
   return (
-    Math.sin(p + coefficient.value * counter.value) * amplitude.value +
+    Math.sin(p + frequency.value * counter.value) * amplitude.value +
     offset.value
   );
 });
