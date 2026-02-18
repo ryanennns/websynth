@@ -78,7 +78,7 @@ const controlSurface = ref<boolean[][]>(
 );
 
 const loop = () => {
-  counter.value += 0.05;
+  counter.value += 2.5
 
   generators.value = generators.value.map(() => 0);
 

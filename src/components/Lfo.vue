@@ -6,11 +6,11 @@
       <div class="flex flex-col">
         <div class="flex flex-col justify-center items-center">
           <Dial
-            :max="5"
+            :max="2"
             :min="0"
-            :step="0.25"
+            :step="0.01"
             :offset="30"
-            :default="0.75"
+            :default="0.01"
             :head="DialHead"
             :back="DialBack"
             v-model="frequency"
