@@ -1,42 +1,44 @@
 <template>
-  <div class="flex flex-row gap-16 p-4">
-    <div class="grid grid-rows-2 grid-cols-2 gap-3">
-      <div
-        class="flex-col flex justify-center items-center"
-        v-for="i in controlSurfaceX"
-        :key="i"
-      >
-        <Dial
-          :max="100"
-          :min="-100"
-          :offset="0"
-          :default="0"
-          :head="DialHead"
-          :back="DialBack"
-          v-model="generators[i - 1]!"
-          class="h-32 w-32"
-        />
-        <p>{{ Math.round(generators[i - 1]!) }}</p>
-        <SineGraph :model-value="generators[i - 1]!" />
+  <div class="bg-zinc-800">
+    <div class="flex flex-row gap-16 p-4">
+      <div class="grid grid-rows-2 grid-cols-2 gap-3">
+        <div
+          class="flex-col flex justify-center items-center"
+          v-for="i in controlSurfaceX"
+          :key="i"
+        >
+          <Dial
+            :max="100"
+            :min="-100"
+            :offset="0"
+            :default="0"
+            :head="DialHead"
+            :back="DialBack"
+            v-model="generators[i - 1]!"
+            class="h-32 w-32"
+          />
+          <p class="text-zinc-300">{{ Math.round(generators[i - 1]!) }}</p>
+          <SineGraph :model-value="generators[i - 1]!" />
+        </div>
       </div>
+      <Lfo v-model="effects[0]!" />
+      <Lfo v-model="effects[1]!" />
+      <Lfo v-model="effects[2]!" />
     </div>
-    <Lfo v-model="effects[0]!" />
-    <Lfo v-model="effects[1]!" />
-    <Lfo v-model="effects[2]!" />
-  </div>
-  <div class="p-12">
-    <MatrixComponent
-      :x="controlSurfaceX"
-      :y="controlSurfaceY"
-      v-model="controlSurface"
-    />
+    <div class="p-12">
+      <MatrixComponent
+        :x="controlSurfaceX"
+        :y="controlSurfaceY"
+        v-model="controlSurface"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import Dial from "@/components/Dial.vue";
-import DialBack from "@/components/Dials/Default/DialBack.vue";
-import DialHead from "@/components/Dials/Default/DialHead.vue";
+import DialBack from "@/components/Dials/Moog/DialBack.vue";
+import DialHead from "@/components/Dials/Moog/DialHead.vue";
 import Lfo from "@/components/Lfo.vue";
 import MatrixComponent from "@/components/Matrix.vue";
 import { ref } from "vue";
@@ -62,7 +64,7 @@ const controlSurface = ref<boolean[][]>(
 );
 
 const loop = () => {
-  counter.value += 2.5;
+  counter.value += 1;
 
   generators.value = generators.value.map(() => 0);
 
@@ -74,7 +76,7 @@ const loop = () => {
     }
   }
 
-  setTimeout(loop, 10);
+  setTimeout(loop, 1);
 };
 
 loop();

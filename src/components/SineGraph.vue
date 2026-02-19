@@ -27,7 +27,7 @@ const draw = () => {
 
     let x = 0;
     history.shift();
-    history.push(height / 2 + props.modelValue);
+    history.push(height / 2 - props.modelValue);
     while (x < width) {
       ctx.lineTo(x, history[x]!);
       x++;

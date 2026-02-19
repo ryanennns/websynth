@@ -71,8 +71,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import DialHead from "./Dials/Default/DialHead.vue";
-import DialBack from "./Dials/Default/DialBack.vue";
+import DialHead from "./Dials/Moog/DialHead.vue";
+import DialBack from "./Dials/Moog/DialBack.vue";
 import Dial from "./Dial.vue";
 import { counter } from "@/core.ts";
 import SineGraph from "@/components/SineGraph.vue";
